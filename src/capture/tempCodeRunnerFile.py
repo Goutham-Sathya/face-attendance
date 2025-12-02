@@ -1,0 +1,1 @@
+Captures face images from webcam
