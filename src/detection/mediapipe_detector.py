@@ -1,4 +1,4 @@
-'''mediapipe_detector.py'''
+
 
 import cv2
 import mediapipe as mp
@@ -7,18 +7,11 @@ from typing import Optional, Tuple, List
 
 
 class MediaPipeFaceDetector:
-    """
-    Wrapper class for MediaPipe face detection.
-    Handles face detection, bounding box extraction, and face cropping.
-    """
+
     
     def __init__(self, min_detection_confidence: float = 0.5):
-        """
-        Initialize MediaPipe face detector.
-        
-        Args:
-            min_detection_confidence: Minimum confidence value ([0.0, 1.0]) for face detection
-        """
+
+
         self.mp_face_detection = mp.solutions.face_detection
         self.mp_drawing = mp.solutions.drawing_utils
         self.detector = self.mp_face_detection.FaceDetection(
@@ -26,15 +19,7 @@ class MediaPipeFaceDetector:
         )
         
     def detect_faces(self, image: np.ndarray) -> Optional[List]:
-        """
-        Detect all faces in an image.
-        
-        Args:
-            image: BGR image (OpenCV format)
-            
-        Returns:
-            List of detection objects or None if no faces found
-        """
+
         # Convert BGR to RGB (MediaPipe expects RGB)
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         
@@ -46,15 +31,7 @@ class MediaPipeFaceDetector:
         return None
     
     def get_largest_face_bbox(self, image: np.ndarray) -> Optional[Tuple[int, int, int, int]]:
-        """
-        Get bounding box of the largest face in the image.
-        
-        Args:
-            image: BGR image (OpenCV format)
-            
-        Returns:
-            Tuple of (x, y, width, height) or None if no face found
-        """
+
         detections = self.detect_faces(image)
         
         if not detections:
@@ -82,16 +59,7 @@ class MediaPipeFaceDetector:
         return largest_bbox
     
     def crop_face(self, image: np.ndarray, margin: float = 0.2) -> Optional[np.ndarray]:
-        """
-        Detect and crop the largest face from an image with optional margin.
-        
-        Args:
-            image: BGR image (OpenCV format)
-            margin: Fraction of face size to add as margin (default 0.2 = 20%)
-            
-        Returns:
-            Cropped face image or None if no face found
-        """
+      
         bbox = self.get_largest_face_bbox(image)
         
         if bbox is None:
@@ -116,16 +84,7 @@ class MediaPipeFaceDetector:
         return face_crop
     
     def draw_detections(self, image: np.ndarray, draw_landmarks: bool = False) -> np.ndarray:
-        """
-        Draw bounding boxes around detected faces on the image.
         
-        Args:
-            image: BGR image (OpenCV format)
-            draw_landmarks: Whether to draw facial landmarks (default False)
-            
-        Returns:
-            Image with drawn detections
-        """
         image_copy = image.copy()
         detections = self.detect_faces(image)
         
@@ -167,16 +126,7 @@ class MediaPipeFaceDetector:
 
 # Convenience functions for quick use
 def detect_faces(image: np.ndarray, confidence: float = 0.5) -> Optional[List]:
-    """
-    Quick function to detect faces without creating detector instance.
-    
-    Args:
-        image: BGR image (OpenCV format)
-        confidence: Minimum detection confidence
-        
-    Returns:
-        List of detections or None
-    """
+
     detector = MediaPipeFaceDetector(min_detection_confidence=confidence)
     detections = detector.detect_faces(image)
     detector.close()
@@ -184,17 +134,7 @@ def detect_faces(image: np.ndarray, confidence: float = 0.5) -> Optional[List]:
 
 
 def get_largest_face(image: np.ndarray, margin: float = 0.2, confidence: float = 0.5) -> Optional[np.ndarray]:
-    """
-    Quick function to get cropped largest face from image.
-    
-    Args:
-        image: BGR image (OpenCV format)
-        margin: Margin around face (fraction)
-        confidence: Minimum detection confidence
-        
-    Returns:
-        Cropped face image or None
-    """
+
     detector = MediaPipeFaceDetector(min_detection_confidence=confidence)
     face_crop = detector.crop_face(image, margin=margin)
     detector.close()
@@ -202,11 +142,7 @@ def get_largest_face(image: np.ndarray, margin: float = 0.2, confidence: float =
 
 
 if __name__ == "__main__":
-    """
-    Test the detector with webcam.
-    Run: python src/detection/mediapipe_detector.py
-    Press 'q' to quit.
-    """
+    
     print("Testing MediaPipe Face Detector...")
     print("Press 'q' to quit")
     
